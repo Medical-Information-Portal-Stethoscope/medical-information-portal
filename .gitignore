@@ -1,0 +1,8 @@
+# certbot
+infra/prod/data/certbot/
+
+# self-signed certificate
+infra/prod/data/nginx/ssl
+
+# env
+.env
