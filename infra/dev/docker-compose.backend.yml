@@ -1,10 +1,16 @@
 version: '3.9'
+name: 'stethoscope_backend_dev'
 
 services:
   backend:
     build:
-      context: ./backend/
+      context: ../../backend/
     env_file:
       - ./.env
+    volumes:
+      - stethoscope_backend_value_dev:/app/data
     ports:
       - "8000:8000"
+
+volumes:
+  stethoscope_backend_value_dev:
