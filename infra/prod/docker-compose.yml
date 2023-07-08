@@ -21,6 +21,12 @@ services:
     expose:
       - "5432"
 
+  frontend:
+    image: gritsenkoserge/stethoscope-frontend:latest
+    volumes:
+      - frontend_build_value:/app/build/
+    command: "/bin/sh -c 'while :; do sleep 1h; done'"
+
   django_backend:
     image: gritsenkoserge/stethoscope-backend:latest
     volumes:
@@ -45,10 +51,11 @@ services:
       - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./data/nginx/configs:/etc/nginx/conf.d:ro
       - ./data/nginx/ssl:/etc/nginx/ssl:ro
-      - static_value:/usr/share/nginx/html/static/
-      - media_value:/usr/share/nginx/html/media/
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - static_value:/usr/share/nginx/html/static
+      - media_value:/usr/share/nginx/html/media
+      - ./data/certbot/conf:/etc/letsencrypt:ro
+      - ./data/certbot/www:/var/www/certbot:ro
+      - frontend_build_value:/usr/share/nginx/html
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
@@ -62,3 +69,4 @@ volumes:
   static_value:
   media_value:
   postgres_value:
+  frontend_build_value:
