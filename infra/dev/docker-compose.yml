@@ -1,5 +1,5 @@
 version: '3.9'
-name: 'stethoscope_prod'
+name: 'stethoscope_dev'
 
 services:
   postgres:
@@ -24,13 +24,13 @@ services:
   frontend:
     build:
       context: ../../frontend/
-    # image: gritsenkoserge/stethoscope-frontend:latest
     volumes:
       - frontend_build_value:/app/build/
     command: "/bin/sh -c 'while :; do sleep 1h; done'"
 
   django_backend:
-    image: gritsenkoserge/stethoscope-backend:latest
+    build:
+      context: ../../backend/
     volumes:
       - static_value:/app/staticfiles/
       - media_value:/app/media/
@@ -45,8 +45,7 @@ services:
   nginx:
     image: nginx:1.23.4
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
     depends_on:
       - django_backend
     volumes:
@@ -55,17 +54,10 @@ services:
       - ./data/nginx/ssl:/etc/nginx/ssl:ro
       - static_value:/usr/share/nginx/html/static
       - media_value:/usr/share/nginx/html/media
-      - ./data/certbot/conf:/etc/letsencrypt:ro
-      - ./data/certbot/www:/var/www/certbot:ro
+      # - ./data/certbot/conf:/etc/letsencrypt:ro
+      # - ./data/certbot/www:/var/www/certbot:ro
       - frontend_build_value:/usr/share/nginx/html
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   static_value:
