@@ -24,8 +24,8 @@ services:
   frontend:
     image: gritsenkoserge/stethoscope-frontend:latest
     volumes:
-      - frontend_build_value:/app/build/
-    command: "/bin/sh -c 'while :; do sleep 1h; done'"
+      - frontend_build_value:/app/build_upload
+    command: "/bin/sh -c 'cp -r /app/build/* /app/build_upload; while :; do sleep 1h; done'"
 
   django_backend:
     image: gritsenkoserge/stethoscope-backend:latest
