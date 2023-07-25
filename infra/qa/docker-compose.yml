@@ -1,0 +1,62 @@
+version: '3.9'
+name: 'stethoscope_qa'
+
+services:
+  postgres:
+    image: postgres:14
+    volumes:
+      - postgres_value:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --username ${POSTGRES_USER} --dbname ${POSTGRES_DB}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    expose:
+      - "5432"
+
+  frontend:
+    image: gritsenkoserge/stethoscope-frontend:latest
+    volumes:
+      - frontend_build_value:/app/build_upload
+    command: "/bin/sh -c 'cp -r /app/build/* /app/build_upload; while :; do sleep 1h; done'"
+
+  django_backend:
+    image: gritsenkoserge/stethoscope-backend:latest
+    volumes:
+      - static_value:/app/staticfiles/
+      - media_value:/app/media/
+    expose:
+      - "8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./.env
+
+  nginx:
+    image: nginx:1.23.4
+    ports:
+      - "8080:80"
+    depends_on:
+      - django_backend
+      - frontend
+    volumes:
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data/nginx/configs:/etc/nginx/conf.d:ro
+      - frontend_build_value:/usr/share/nginx/html:ro
+      - static_value:/home/src/app/static:ro
+      - media_value:/home/src/app/media:ro
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+volumes:
+  static_value:
+  media_value:
+  postgres_value:
+  frontend_build_value:
