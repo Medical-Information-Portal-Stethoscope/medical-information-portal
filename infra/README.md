@@ -81,6 +81,12 @@ docker compose -f docker-compose.backend.yml exec postgres bash
 ```
 psql -U stethoscope_user -d stethoscope_db
 ```
+- Обновление образов, в том числе backend
+```
+docker compose -f docker-compose.backend.yml down
+docker compose -f docker-compose.backend.yml pull
+docker compose -f docker-compose.backend.yml up -d
+```
 
 ### Self-signed certificate
 ```
