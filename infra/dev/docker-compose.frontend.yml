@@ -1,0 +1,13 @@
+version: '3.9'
+name: 'stethoscope_frontend_dev'
+
+services:
+  frontend:
+    build:
+      context: ../../frontend/
+    volumes:
+      - stethoscope_frontend_build_value_dev:/app/build/
+    command: "/bin/sh -c 'while :; do sleep 1h; done'"
+
+volumes:
+  stethoscope_frontend_build_value_dev:
