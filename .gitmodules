@@ -1,6 +1,6 @@
 [submodule "frontend"]
 	path = frontend
-	url = https://github.com/Medical-Information/medical-information-frontend.git
+	url = https://github.com/Medical-Information-Portal-Stethoscope/medical-information-frontend.git
 [submodule "backend"]
 	path = backend
-	url = https://github.com/Medical-Information/medical-information-backend.git
+	url = https://github.com/Medical-Information-Portal-Stethoscope/medical-information-backend.git
