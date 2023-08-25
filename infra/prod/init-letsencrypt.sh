@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker compose)" ]; then
   exit 1
 fi
 
-domains=(stethoscope.acceleratorpracticum.ru)
+domains=(stethoscope-portal.ru)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="gritsenko.serge.2013@yandex.ru"
